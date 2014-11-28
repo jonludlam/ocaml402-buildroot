@@ -1,7 +1,10 @@
+%{?scl:%scl_package ocaml-ounit}
+%{!?scl:%global pkg_name %{name}}
+
 %define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 %define debug_package %{nil}
 
-Name:           ocaml-ounit
+Name:           %{?scl_prefix}ocaml-ounit
 Version:        2.0.0
 Release:        1%{?dist}
 Summary:        Unit test framework for OCaml
@@ -11,10 +14,10 @@ URL:            http://ounit.forge.ocamlcore.org/
 Source0:        http://forge.ocamlcore.org/frs/download.php/1258/ounit-%{version}.tar.gz
 ExcludeArch:    sparc64 s390 s390x
 
-BuildRequires:  ocaml >= 3.10.0
-BuildRequires:  ocaml-findlib-devel
-BuildRequires:  ocaml-camlp4-devel
-BuildRequires:  ocaml-ocamldoc
+BuildRequires:  %{?scl_prefix}ocaml >= 3.10.0
+BuildRequires:  %{?scl_prefix}ocaml-findlib-devel
+BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
+BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
 
 %description
 OUnit is a unit test framework for OCaml. It allows one to easily
@@ -23,28 +26,36 @@ framework for Haskell. It is similar to JUnit, and other xUnit testing
 frameworks.
 
 %package        devel
-Summary:        Development files for %{name}
-Requires:       %{name} = %{version}-%{release}
+Summary:        Development files for %{pkg_name}
+Requires:       %{?scl_prefix}%{pkg_name} = %{version}-%{release}
 
 %description    devel
-The %{name}-devel package contains libraries and signature files for
-developing applications that use %{name}.
+The %{pkg_name}-devel package contains libraries and signature files for
+developing applications that use %{pkg_name}.
 
 %prep
 %setup -q -n ounit-%{version}
 
 %build
 sh ./configure --destdir $RPM_BUILD_ROOT
+%{?scl:scl enable %{scl} "}
 make all
+%{?scl:"}
+%{?scl:scl enable %{scl} "}
 make doc
+%{?scl:"}
 
 %check
+%{?scl:scl enable %{scl} "}
 make test
+%{?scl:"}
 
 %install
 export OCAMLFIND_DESTDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml
 mkdir -p $OCAMLFIND_DESTDIR $OCAMLFIND_DESTDIR/stublibs
+%{?scl:scl enable %{scl} "}
 make install
+%{?scl:"}
 
 # Remove this, reinstall it properly with a %%doc rule below.
 rm -rf $RPM_BUILD_ROOT/usr/local/share/doc
