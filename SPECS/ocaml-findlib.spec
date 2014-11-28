@@ -1,6 +1,9 @@
+%{?scl:%scl_package ocaml-findlib}
+%{!?scl:%global pkg_name %{name}}
+
 %global opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
-Name:           ocaml-findlib
+Name:           %{?scl_prefix}ocaml-findlib
 Version:        1.5.2
 Release:        3%{?dist}
 Summary:        Objective CAML package manager and build helper
@@ -12,14 +15,14 @@ Source0:        http://download.camlcity.org/download/findlib-%{version}.tar.gz
 # Use ocamlopt -g patch to include debug information.
 Patch1:         findlib-1.4-add-debug.patch
 
-BuildRequires:  ocaml >= 4.02.0
-BuildRequires:  ocaml-camlp4-devel
-#BuildRequires:  ocaml-labltk-devel
-BuildRequires:  ocaml-compiler-libs
-BuildRequires:  ocaml-ocamldoc
-BuildRequires:  m4, ncurses-devel
-BuildRequires:  gawk
-Requires:       ocaml
+BuildRequires:  %{?scl_prefix}ocaml >= 4.02.0
+BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
+#BuildRequires:  %{?scl_prefix}ocaml-labltk-devel
+BuildRequires:  %{?scl_prefix}ocaml-compiler-libs
+BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
+BuildRequires:  %{?scl_prefix}m4, %{?scl_prefix}ncurses-devel
+BuildRequires:  %{?scl_prefix}gawk
+Requires:       %{?scl_prefix}ocaml
 
 %global __ocaml_requires_opts -i Asttypes -i Parsetree
 
@@ -29,13 +32,13 @@ Objective CAML package manager and build helper.
 
 
 %package        devel
-Summary:        Development files for %{name}
-Requires:       %{name} = %{version}-%{release}
+Summary:        Development files for %{pkg_name}
+Requires:       %{?scl_prefix}%{pkg_name} = %{version}-%{release}
 
 
 %description    devel
-The %{name}-devel package contains libraries and header files for
-developing applications that use %{name}.
+The %{pkg_name}-devel package contains libraries and header files for
+developing applications that use %{pkg_name}.
 
 
 %prep
@@ -54,9 +57,13 @@ cat src/findlib/ocaml_args.ml
   -sitelib `ocamlc -where` \
   -mandir %{_mandir} \
   -with-toolbox
+%{?scl:scl enable %{scl} "}
 make all
+%{?scl:"}
 %if %opt
+%{?scl:scl enable %{scl} "}
 make opt
+%{?scl:"}
 %endif
 rm doc/guide-html/TIMESTAMP
 
@@ -64,7 +71,9 @@ rm doc/guide-html/TIMESTAMP
 %install
 # Grrr destdir grrrr
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
+%{?scl:scl enable %{scl} "}
 make install prefix=$RPM_BUILD_ROOT OCAMLFIND_BIN=$RPM_BUILD_ROOT%{_bindir}
+%{?scl:"}
 mv $RPM_BUILD_ROOT/$RPM_BUILD_ROOT%{_bindir}/* $RPM_BUILD_ROOT%{_bindir}
 
 
@@ -96,7 +105,6 @@ mv $RPM_BUILD_ROOT/$RPM_BUILD_ROOT%{_bindir}/* $RPM_BUILD_ROOT%{_bindir}
 %endif
 %{_libdir}/ocaml/findlib/*.mli
 %{_libdir}/ocaml/findlib/Makefile.config
-
 
 %changelog
 * Sat Aug 30 2014 Richard W.M. Jones <rjones@redhat.com> - 1.5.2-3

@@ -1,10 +1,13 @@
+%{?scl:%scl_package ocaml-labltk}
+%{!?scl:%global pkg_name %{name}}
+
 %ifarch %{ocaml_native_compiler}
 %global native_compiler 1
 %else
 %global native_compiler 0
 %endif
 
-Name:          ocaml-labltk
+Name:          %{?scl_prefix}ocaml-labltk
 Version:       4.02
 Release:       0.7.beta1%{?dist}
 
@@ -18,8 +21,8 @@ Source0:       https://forge.ocamlcore.org/frs/download.php/1409/labltk-4.02-bet
 # This adds debugging (-g) everywhere.
 Patch1:        labltk-4.02-enable-debugging.patch
 
-BuildRequires: ocaml
-BuildRequires: tcl-devel, tk-devel
+BuildRequires: %{?scl_prefix}ocaml
+BuildRequires: %{?scl_prefix}tcl-devel, %{?scl_prefix}tk-devel
 
 
 %description
@@ -30,7 +33,7 @@ language Tcl/Tk (all versions since 8.0.3, but no betas).
 %package devel
 Summary:       Tcl/Tk interface for OCaml
 
-Requires:      %{name}%{?_isa} = %{version}-%{release}
+Requires:      %{?scl_prefix}%{pkg_name}%{?_isa} = %{version}-%{release}
 
 
 %description devel
@@ -52,10 +55,16 @@ find -name .gitignore -delete
 %build
 ./configure
 %if !%{native_compiler}
+%{?scl:scl enable %{scl} "}
 make %{?_smp_mflags} byte
+%{?scl:"}
 %else
+%{?scl:scl enable %{scl} "}
 make %{?_smp_mflags} all
+%{?scl:"}
+%{?scl:scl enable %{scl} "}
 make %{?_smp_mflags} opt
+%{?scl:"}
 %endif
 
 
@@ -63,10 +72,12 @@ make %{?_smp_mflags} opt
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/ocaml/labltk
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/ocaml/stublibs
+%{?scl:scl enable %{scl} - << \EOF}
 make install \
     BINDIR=$RPM_BUILD_ROOT%{_bindir} \
     INSTALLDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml/labltk \
     STUBLIBDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml/stublibs
+%{?scl:EOF}
 # The *.o files are not installed by the Makefile.  AIUI
 # that prevents linking with native code programs.
 install -m 0644 camltk/*.o $RPM_BUILD_ROOT%{_libdir}/ocaml/labltk
@@ -97,7 +108,6 @@ install -m 0644 camltk/*.o $RPM_BUILD_ROOT%{_libdir}/ocaml/labltk
 %{_libdir}/ocaml/labltk/*.o
 %endif
 %{_libdir}/ocaml/labltk/*.mli
-
 
 %changelog
 * Sat Aug 30 2014 Richard W.M. Jones <rjones@redhat.com> - 4.02-0.7.beta1

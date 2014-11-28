@@ -1,3 +1,6 @@
+%{?scl:%scl_package ocaml-camlp4}
+%{!?scl:%global pkg_name %{name}}
+
 %ifarch %{ocaml_native_compiler}
 %global native_compiler 1
 %else
@@ -7,7 +10,7 @@
 %global gitcommit 87c6a6b07818acbbef6ced00cc8f4e09b533e055
 %global shortcommit 87c6a6b0
 
-Name:          ocaml-camlp4
+Name:          %{?scl_prefix}ocaml-camlp4
 Version:       4.02.0
 Release:       0.8.git%{shortcommit}%{?dist}
 
@@ -21,8 +24,8 @@ Source0:       https://github.com/ocaml/camlp4/archive/%{gitcommit}/camlp4-%{git
 # This package used to be part of the upstream compiler.  We still
 # need to keep it in lock step with the compiler, so whenever a new
 # compiler is released we will also update this package also.
-BuildRequires: ocaml = %{version}
-Requires:      ocaml-runtime = %{version}
+BuildRequires: %{?scl_prefix}ocaml = %{version}
+Requires:      %{?scl_prefix}ocaml-runtime = %{version}
 
 
 %description
@@ -35,7 +38,7 @@ This package contains the runtime files.
 %package devel
 Summary:       Pre-Processor-Pretty-Printer for OCaml
 
-Requires:      %{name}%{?_isa} = %{version}-%{release}
+Requires:      %{?scl_prefix}%{pkg_name}%{?_isa} = %{version}-%{release}
 
 
 %description devel
@@ -54,19 +57,25 @@ This package contains the development files.
 # Incompatible with parallel builds:
 unset MAKEFLAGS
 %if !%{native_compiler}
+%{?scl:scl enable %{scl} "}
 make byte
+%{?scl:"}
 %else
+%{?scl:scl enable %{scl} "}
 make all
+%{?scl:"}
 %endif
 
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/ocaml/camlp4
+%{?scl:scl enable %{scl} - << \EOF}
 make install \
   BINDIR=$RPM_BUILD_ROOT%{_bindir} \
   LIBDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml \
   PKGDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml/camlp4
+%{?scl:EOF}
 
 
 %files
@@ -107,7 +116,6 @@ make install \
 %{_libdir}/ocaml/camlp4/Camlp4Top/*.cmx
 %{_libdir}/ocaml/camlp4/Camlp4Top/*.o
 %endif
-
 
 %changelog
 * Mon Nov 03 2014 Richard W.M. Jones <rjones@redhat.com> - 4.02.0-0.8.git87c6a6b0

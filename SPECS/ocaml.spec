@@ -1,3 +1,6 @@
+%{?scl:%scl_package ocaml}
+%{!?scl:%global pkg_name %{name}}
+
 # OCaml has a bytecode backend that works on anything with a C
 # compiler, and a native code backend available on a subset of
 # architectures.  A further subset of architectures support native
@@ -15,7 +18,7 @@
 %global natdynlink 0
 %endif
 
-Name:           ocaml
+Name:           %{?scl_prefix}ocaml
 Version:        4.02.0
 Release:        6%{?dist}
 
@@ -25,7 +28,7 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/pub/distrib/ocaml-4.02/%{name}-%{version}.tar.gz
+Source0:        http://caml.inria.fr/pub/distrib/ocaml-4.02/%{pkg_name}-%{version}.tar.gz
 Source1:        http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02-refman-html.tar.gz
 Source2:        http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02-refman.pdf
 Source3:        http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02-refman.info.tar.gz
@@ -95,9 +98,9 @@ Requires:       rpm-build >= 4.8.0
 Requires:       ocaml-runtime = %{version}-%{release}
 
 # Bundles an MD5 implementation in byterun/md5.{c,h}
-Provides:       bundled(md5-plumb)
+Provides:       %{?scl_prefix}bundled(md5-plumb)
 
-Provides:       ocaml(compiler) = %{version}
+Provides:       %{?scl_prefix}ocaml(compiler) = %{version}
 
 %global __ocaml_requires_opts -c -f '%{buildroot}%{_bindir}/ocamlrun %{buildroot}%{_bindir}/ocamlobjinfo'
 %global __ocaml_provides_opts -f '%{buildroot}%{_bindir}/ocamlrun %{buildroot}%{_bindir}/ocamlobjinfo'
@@ -116,7 +119,7 @@ and a comprehensive library.
 %package runtime
 Summary:        OCaml runtime environment
 Requires:       util-linux
-Provides:       ocaml(runtime) = %{version}
+Provides:       %{?scl_prefix}ocaml(runtime) = %{version}
 
 %description runtime
 OCaml is a high-level, strongly-typed, functional and object-oriented
@@ -146,7 +149,7 @@ X11 support for OCaml.
 %package ocamldoc
 Summary:        Documentation generator for OCaml
 Requires:       ocaml = %{version}-%{release}
-Provides:	ocamldoc
+Provides:	%{?scl_prefix}ocamldoc
 
 %description ocamldoc
 Documentation generator for OCaml.
@@ -192,9 +195,9 @@ may not be portable between versions.
 
 
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}
-%setup -q -T -D -a 1 -n %{name}-%{version}
-%setup -q -T -D -a 3 -n %{name}-%{version}
+%setup -q -T -b 0 -n %{pkg_name}-%{version}
+%setup -q -T -D -a 1 -n %{pkg_name}-%{version}
+%setup -q -T -D -a 3 -n %{pkg_name}-%{version}
 cp %{SOURCE2} refman.pdf
 
 git init
@@ -228,11 +231,17 @@ CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" \
     -x11include %{_includedir} \
     -mandir %{_mandir}/man1 \
     -no-curses
+%{?scl:scl enable %{scl} "}
 make world
+%{?scl:"}
 %if %{native_compiler}
+%{?scl:scl enable %{scl} "}
 make opt opt.opt
+%{?scl:"}
 %endif
+%{?scl:scl enable %{scl} "}
 make -C emacs ocamltags
+%{?scl:"}
 
 # Currently these tools are supplied by Debian, but are expected
 # to go upstream at some point.
@@ -245,11 +254,15 @@ boot/ocamlrun ./ocamlc $includes dynlinkaux.cmo ocamlbyteinfo.ml -o ocamlbyteinf
 
 
 %install
+%{?scl:scl enable %{scl} - << \EOF}
 make install \
      BINDIR=$RPM_BUILD_ROOT%{_bindir} \
      LIBDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml \
      MANDIR=$RPM_BUILD_ROOT%{_mandir}
+%{?scl:EOF}
+%{?scl:scl enable %{scl} '}
 perl -pi -e "s|^$RPM_BUILD_ROOT||" $RPM_BUILD_ROOT%{_libdir}/ocaml/ld.conf
+%{?scl:'}
 
 (
     # install emacs files
@@ -281,13 +294,13 @@ find $RPM_BUILD_ROOT -name .ignore -delete
 /sbin/install-info \
     --entry="* ocaml: (ocaml).   The OCaml compiler and programming environment" \
     --section="Programming Languages" \
-    %{_infodir}/%{name}.info \
+    %{_infodir}/%{pkg_name}.info \
     %{_infodir}/dir 2>/dev/null || :
 
 
 %preun docs
 if [ $1 -eq 0 ]; then
-  /sbin/install-info --delete %{_infodir}/%{name}.info %{_infodir}/dir 2>/dev/null || :
+  /sbin/install-info --delete %{_infodir}/%{pkg_name}.info %{_infodir}/dir 2>/dev/null || :
 fi
 
 
@@ -419,7 +432,6 @@ fi
 %{_libdir}/ocaml/compiler-libs/*.cmx
 %{_libdir}/ocaml/compiler-libs/*.o
 %endif
-
 
 %changelog
 * Fri Oct 24 2014 Richard W.M. Jones <rjones@redhat.com> - 4.02.0-6
