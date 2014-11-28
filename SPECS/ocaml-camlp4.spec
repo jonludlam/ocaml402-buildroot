@@ -1,6 +1,9 @@
 %{?scl:%scl_package ocaml-camlp4}
 %{!?scl:%global pkg_name %{name}}
 
+%define ocaml_native_compiler x86_64
+%define ocaml_natdynlink x86_64
+
 %ifarch %{ocaml_native_compiler}
 %global native_compiler 1
 %else
@@ -10,9 +13,14 @@
 %global gitcommit 87c6a6b07818acbbef6ced00cc8f4e09b533e055
 %global shortcommit 87c6a6b0
 
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+%{?scl:%filter_from_requires s|ocaml\(runtime\)|%{?scl_prefix}ocaml\(runtime\)|g}
+
 Name:          %{?scl_prefix}ocaml-camlp4
 Version:       4.02.0
-Release:       0.8.git%{shortcommit}%{?dist}
+Release:       0.9.git%{shortcommit}%{?dist}
 
 Summary:       Pre-Processor-Pretty-Printer for OCaml
 
@@ -21,11 +29,15 @@ License:       LGPLv2+ with exceptions
 URL:           https://github.com/ocaml/camlp4
 Source0:       https://github.com/ocaml/camlp4/archive/%{gitcommit}/camlp4-%{gitcommit}.tar.gz
 
+# This causes the RPMs to be explicitly SCL ones.
+BuildRequires: jonludlam-ocaml4021-build
+BuildRequires: jonludlam-ocaml4021-runtime
+ 
 # This package used to be part of the upstream compiler.  We still
 # need to keep it in lock step with the compiler, so whenever a new
 # compiler is released we will also update this package also.
-BuildRequires: %{?scl_prefix}ocaml = %{version}
-Requires:      %{?scl_prefix}ocaml-runtime = %{version}
+BuildRequires: jonludlam-ocaml4021-ocaml
+Requires:      %{?scl_prefix}ocaml-runtime
 
 
 %description
@@ -53,7 +65,9 @@ This package contains the development files.
 
 
 %build
+%{?scl:scl enable %{scl} "}
 ./configure
+%{?scl:"}
 # Incompatible with parallel builds:
 unset MAKEFLAGS
 %if !%{native_compiler}
@@ -118,6 +132,9 @@ make install \
 %endif
 
 %changelog
+* Thu Nov 27 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 4.02.0-0.9.git87c6a6b0
+- SCLify
+
 * Mon Nov 03 2014 Richard W.M. Jones <rjones@redhat.com> - 4.02.0-0.8.git87c6a6b0
 - Bump version and rebuild.
 

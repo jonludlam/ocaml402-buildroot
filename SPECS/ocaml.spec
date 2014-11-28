@@ -6,6 +6,9 @@
 # architectures.  A further subset of architectures support native
 # dynamic linking.
 
+%define ocaml_native_compiler x86_64
+%define ocaml_natdynlink x86_64
+
 %ifarch %{ocaml_native_compiler}
 %global native_compiler 1
 %else
@@ -19,8 +22,8 @@
 %endif
 
 Name:           %{?scl_prefix}ocaml
-Version:        4.02.0
-Release:        6%{?dist}
+Version:        4.02.1
+Release:        1%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -28,7 +31,7 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/pub/distrib/ocaml-4.02/%{pkg_name}-%{version}.tar.gz
+Source0:        http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-%{version}.tar.gz
 Source1:        http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02-refman-html.tar.gz
 Source2:        http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02-refman.pdf
 Source3:        http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02-refman.info.tar.gz
@@ -86,6 +89,9 @@ BuildRequires:  mesa-libGL-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  chrpath
 
+# This causes the RPMs to be explicitly SCL ones.
+BuildRequires: jonludlam-ocaml4021-build
+
 # git is required for patch management.
 BuildRequires:  git
 
@@ -95,7 +101,7 @@ Requires:       rpm-build >= 4.8.0
 # Because we pass -c flag to ocaml-find-requires (to avoid circular
 # dependencies) we also have to explicitly depend on the right version
 # of ocaml-runtime.
-Requires:       ocaml-runtime = %{version}-%{release}
+Requires:       %{?scl_prefix}ocaml-runtime = %{version}-%{release}
 
 # Bundles an MD5 implementation in byterun/md5.{c,h}
 Provides:       %{?scl_prefix}bundled(md5-plumb)
@@ -131,7 +137,7 @@ bytecode.
 
 %package source
 Summary:        Source code for OCaml libraries
-Requires:       ocaml = %{version}-%{release}
+Requires:       %{?scl_prefix}ocaml = %{version}-%{release}
 
 %description source
 Source code for OCaml libraries.
@@ -139,7 +145,7 @@ Source code for OCaml libraries.
 
 %package x11
 Summary:        X11 support for OCaml
-Requires:       ocaml-runtime = %{version}-%{release}
+Requires:       %{?scl_prefix}ocaml-runtime = %{version}-%{release}
 Requires:       libX11-devel
 
 %description x11
@@ -148,7 +154,7 @@ X11 support for OCaml.
 
 %package ocamldoc
 Summary:        Documentation generator for OCaml
-Requires:       ocaml = %{version}-%{release}
+Requires:       %{?scl_prefix}ocaml = %{version}-%{release}
 Provides:	%{?scl_prefix}ocamldoc
 
 %description ocamldoc
@@ -157,7 +163,7 @@ Documentation generator for OCaml.
 
 %package emacs
 Summary:        Emacs mode for OCaml
-Requires:       ocaml = %{version}-%{release}
+Requires:       %{?scl_prefix}ocaml = %{version}-%{release}
 Requires:       emacs(bin)
 
 %description emacs
@@ -166,7 +172,7 @@ Emacs mode for OCaml.
 
 %package docs
 Summary:        Documentation for OCaml
-Requires:       ocaml = %{version}-%{release}
+Requires:       %{?scl_prefix}ocaml = %{version}-%{release}
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
 
@@ -181,7 +187,7 @@ man pages and info files.
 
 %package compiler-libs
 Summary:        Compiler libraries for OCaml
-Requires:       ocaml = %{version}-%{release}
+Requires:       %{?scl_prefix}ocaml = %{version}-%{release}
 
 
 %description compiler-libs
@@ -231,17 +237,11 @@ CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" \
     -x11include %{_includedir} \
     -mandir %{_mandir}/man1 \
     -no-curses
-%{?scl:scl enable %{scl} "}
 make world
-%{?scl:"}
 %if %{native_compiler}
-%{?scl:scl enable %{scl} "}
 make opt opt.opt
-%{?scl:"}
 %endif
-%{?scl:scl enable %{scl} "}
 make -C emacs ocamltags
-%{?scl:"}
 
 # Currently these tools are supplied by Debian, but are expected
 # to go upstream at some point.
@@ -254,15 +254,11 @@ boot/ocamlrun ./ocamlc $includes dynlinkaux.cmo ocamlbyteinfo.ml -o ocamlbyteinf
 
 
 %install
-%{?scl:scl enable %{scl} - << \EOF}
 make install \
      BINDIR=$RPM_BUILD_ROOT%{_bindir} \
      LIBDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml \
      MANDIR=$RPM_BUILD_ROOT%{_mandir}
-%{?scl:EOF}
-%{?scl:scl enable %{scl} '}
 perl -pi -e "s|^$RPM_BUILD_ROOT||" $RPM_BUILD_ROOT%{_libdir}/ocaml/ld.conf
-%{?scl:'}
 
 (
     # install emacs files
@@ -434,6 +430,9 @@ fi
 %endif
 
 %changelog
+* Thu Nov 27 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 4.02.1-1
+- Update to latest release and SCLify
+
 * Fri Oct 24 2014 Richard W.M. Jones <rjones@redhat.com> - 4.02.0-6
 - Fixes for ppc64/ppc64le (RHBZ#1156300).
 

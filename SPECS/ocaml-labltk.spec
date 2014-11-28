@@ -1,15 +1,22 @@
 %{?scl:%scl_package ocaml-labltk}
 %{!?scl:%global pkg_name %{name}}
 
+%define ocaml_native_compiler x86_64
+%define ocaml_natdynlink x86_64
+
 %ifarch %{ocaml_native_compiler}
 %global native_compiler 1
 %else
 %global native_compiler 0
 %endif
 
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
 Name:          %{?scl_prefix}ocaml-labltk
 Version:       4.02
-Release:       0.7.beta1%{?dist}
+Release:       2%{?dist}
 
 Summary:       Tcl/Tk interface for OCaml
 
@@ -21,9 +28,15 @@ Source0:       https://forge.ocamlcore.org/frs/download.php/1409/labltk-4.02-bet
 # This adds debugging (-g) everywhere.
 Patch1:        labltk-4.02-enable-debugging.patch
 
-BuildRequires: %{?scl_prefix}ocaml
-BuildRequires: %{?scl_prefix}tcl-devel, %{?scl_prefix}tk-devel
+BuildRequires: jonludlam-ocaml4021-ocaml
+BuildRequires: tcl-devel, tk-devel
+BuildRequires: jonludlam-ocaml4021-ocaml-compiler-libs
 
+# This causes the RPMs to be explicitly SCL ones.
+# NB don't use %scl_prefix as that's defined by the first of these!
+BuildRequires: jonludlam-ocaml4021-build
+BuildRequires: jonludlam-ocaml4021-runtime
+Requires: tk, tcl
 
 %description
 labltk or mlTk is a library for interfacing OCaml with the scripting
@@ -53,7 +66,10 @@ find -name .gitignore -delete
 
 
 %build
+%{?scl:scl enable %{scl} "}
 ./configure
+%{?scl:"}
+
 %if !%{native_compiler}
 %{?scl:scl enable %{scl} "}
 make %{?_smp_mflags} byte
@@ -110,6 +126,13 @@ install -m 0644 camltk/*.o $RPM_BUILD_ROOT%{_libdir}/ocaml/labltk
 %{_libdir}/ocaml/labltk/*.mli
 
 %changelog
+* Fri Nov 28 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 4.02-2
+- Explicitly depend upon tk/tcl, which likely stopped being dependencies
+  when the automatic dependency thing was changed to do scl stuff
+
+* Thu Nov 27 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 4.02-1
+- SCLify
+
 * Sat Aug 30 2014 Richard W.M. Jones <rjones@redhat.com> - 4.02-0.7.beta1
 - ocaml-4.02.0 final rebuild.
 

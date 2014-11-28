@@ -3,9 +3,13 @@
 
 %global opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
 Name:           %{?scl_prefix}ocaml-findlib
 Version:        1.5.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Objective CAML package manager and build helper
 License:        BSD
 
@@ -15,13 +19,17 @@ Source0:        http://download.camlcity.org/download/findlib-%{version}.tar.gz
 # Use ocamlopt -g patch to include debug information.
 Patch1:         findlib-1.4-add-debug.patch
 
-BuildRequires:  %{?scl_prefix}ocaml >= 4.02.0
-BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
-#BuildRequires:  %{?scl_prefix}ocaml-labltk-devel
-BuildRequires:  %{?scl_prefix}ocaml-compiler-libs
-BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
-BuildRequires:  %{?scl_prefix}m4, %{?scl_prefix}ncurses-devel
-BuildRequires:  %{?scl_prefix}gawk
+# This causes the RPMs to be explicitly SCL ones.
+BuildRequires: jonludlam-ocaml4021-build
+BuildRequires: jonludlam-ocaml4021-runtime
+
+BuildRequires:  jonludlam-ocaml4021-ocaml
+BuildRequires:  jonludlam-ocaml4021-ocaml-camlp4-devel
+BuildRequires:  jonludlam-ocaml4021-ocaml-labltk-devel
+BuildRequires:  jonludlam-ocaml4021-ocaml-compiler-libs
+BuildRequires:  jonludlam-ocaml4021-ocaml-ocamldoc
+BuildRequires:  m4, ncurses-devel
+BuildRequires:  gawk
 Requires:       %{?scl_prefix}ocaml
 
 %global __ocaml_requires_opts -i Asttypes -i Parsetree
@@ -47,24 +55,19 @@ developing applications that use %{pkg_name}.
 
 
 %build
-ocamlc -version
-ocamlc -where
+%{?scl:scl enable %{scl} "}
 (cd tools/extract_args && make)
 tools/extract_args/extract_args -o src/findlib/ocaml_args.ml ocamlc ocamlcp ocamlmktop ocamlopt ocamldep ocamldoc ||:
-cat src/findlib/ocaml_args.ml
 ./configure -config %{_sysconfdir}/ocamlfind.conf \
   -bindir %{_bindir} \
-  -sitelib `ocamlc -where` \
+  -sitelib %{_libdir}/ocaml \
   -mandir %{_mandir} \
   -with-toolbox
-%{?scl:scl enable %{scl} "}
 make all
-%{?scl:"}
 %if %opt
-%{?scl:scl enable %{scl} "}
 make opt
-%{?scl:"}
 %endif
+%{?scl:"}
 rm doc/guide-html/TIMESTAMP
 
 
@@ -107,6 +110,9 @@ mv $RPM_BUILD_ROOT/$RPM_BUILD_ROOT%{_bindir}/* $RPM_BUILD_ROOT%{_bindir}
 %{_libdir}/ocaml/findlib/Makefile.config
 
 %changelog
+* Thu Nov 27 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 1.5.2-4
+- SCLify
+
 * Sat Aug 30 2014 Richard W.M. Jones <rjones@redhat.com> - 1.5.2-3
 - Bump release and rebuild.
 
