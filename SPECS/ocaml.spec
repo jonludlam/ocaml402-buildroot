@@ -1,3 +1,4 @@
+%global scl jonludlam-ocaml4021
 %{?scl:%scl_package ocaml}
 %{!?scl:%global pkg_name %{name}}
 

@@ -1,3 +1,4 @@
+%global scl jonludlam-ocaml4021
 %{?scl:%scl_package ocaml-camlp4}
 %{!?scl:%global pkg_name %{name}}
 
@@ -16,7 +17,6 @@
 %define _use_internal_dependency_generator 0
 %define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
 %define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
-%{?scl:%filter_from_requires s|ocaml\(runtime\)|%{?scl_prefix}ocaml\(runtime\)|g}
 
 Name:          %{?scl_prefix}ocaml-camlp4
 Version:       4.02.0
