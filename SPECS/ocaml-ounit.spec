@@ -1,8 +1,14 @@
+%global scl jonludlam-ocaml4021
 %{?scl:%scl_package ocaml-ounit}
 %{!?scl:%global pkg_name %{name}}
 
 %define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 %define debug_package %{nil}
+
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
 
 Name:           %{?scl_prefix}ocaml-ounit
 Version:        2.0.0
@@ -18,6 +24,8 @@ BuildRequires:  %{?scl_prefix}ocaml >= 3.10.0
 BuildRequires:  %{?scl_prefix}ocaml-findlib-devel
 BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
 BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
 
 %description
 OUnit is a unit test framework for OCaml. It allows one to easily
@@ -37,7 +45,9 @@ developing applications that use %{pkg_name}.
 %setup -q -n ounit-%{version}
 
 %build
+%{?scl:scl enable %{scl} "}
 sh ./configure --destdir $RPM_BUILD_ROOT
+%{?scl:"}
 %{?scl:scl enable %{scl} "}
 make all
 %{?scl:"}
