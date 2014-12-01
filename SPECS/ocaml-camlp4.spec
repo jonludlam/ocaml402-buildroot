@@ -36,7 +36,7 @@ BuildRequires: jonludlam-ocaml4021-runtime
 # This package used to be part of the upstream compiler.  We still
 # need to keep it in lock step with the compiler, so whenever a new
 # compiler is released we will also update this package also.
-BuildRequires: jonludlam-ocaml4021-ocaml
+BuildRequires: %{?scl_prefix}ocaml
 Requires:      %{?scl_prefix}ocaml-runtime
 
 

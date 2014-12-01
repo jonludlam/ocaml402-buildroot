@@ -29,14 +29,14 @@ Source0:       https://forge.ocamlcore.org/frs/download.php/1409/labltk-4.02-bet
 # This adds debugging (-g) everywhere.
 Patch1:        labltk-4.02-enable-debugging.patch
 
-BuildRequires: jonludlam-ocaml4021-ocaml
+BuildRequires: %{?scl_prefix}ocaml
 BuildRequires: tcl-devel, tk-devel
-BuildRequires: jonludlam-ocaml4021-ocaml-compiler-libs
+BuildRequires: %{?scl_prefix}ocaml-compiler-libs
 
 # This causes the RPMs to be explicitly SCL ones.
 # NB don't use %scl_prefix as that's defined by the first of these!
-BuildRequires: jonludlam-ocaml4021-build
-BuildRequires: jonludlam-ocaml4021-runtime
+BuildRequires: %{?scl_prefix}build
+BuildRequires: %{?scl_prefix}runtime
 Requires: tk, tcl
 
 %description
