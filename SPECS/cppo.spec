@@ -16,6 +16,11 @@ Source0:        https://github.com/mjambon/%{pkg_name}/archive/v%{version}/%{pkg
 
 BuildRequires:  %{?scl_prefix}ocaml
 
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
+
 %description
 Equivalent of the C preprocessor for OCaml.
 

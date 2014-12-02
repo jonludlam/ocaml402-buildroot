@@ -17,6 +17,11 @@ Source0:	http://forge.ocamlcore.org/frs/download.php/1209/%{pkg_name}-%{version}
 BuildRequires:	%{?scl_prefix}ocaml >= 3.10.2
 BuildRequires:	%{?scl_prefix}ocaml-findlib
 
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
+
 %description
 Create OCaml source code by including whole files into OCaml string or
 string list.

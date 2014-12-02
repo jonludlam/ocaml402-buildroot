@@ -25,6 +25,10 @@ BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
 BuildRequires:  %{?scl_prefix}ocaml-ounit-devel
 %endif
 
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
 
 %description
 This library is intended to provide a basic interface to the most

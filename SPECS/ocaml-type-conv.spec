@@ -21,6 +21,11 @@ BuildRequires:  %{?scl_prefix}ocaml-findlib
 BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
 BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
 
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
+
 %description
 The type-conv mini library factors out functionality needed by
 different preprocessors that generate code from type specifications,

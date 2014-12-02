@@ -21,8 +21,11 @@ ExcludeArch:    sparc64 s390 s390x
 BuildRequires:  %{?scl_prefix}ocaml >= 3.10.0
 BuildRequires:  %{?scl_prefix}ocaml-findlib-devel
 BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
+
+%if 0%{?scl:1}
 BuildRequires:  %{?scl_prefix}build
 BuildRequires:  %{?scl_prefix}runtime
+%endif
 # This may have been required by < 2.0.0, but doesn't seem to be
 # needed for newer versions.
 #BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel

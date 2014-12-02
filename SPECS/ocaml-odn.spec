@@ -22,6 +22,11 @@ BuildRequires:	%{?scl_prefix}ocaml-type-conv >= 108.07.01
 BuildRequires:	%{?scl_prefix}ocaml-ounit-devel >= 2.0.0
 BuildRequires:	%{?scl_prefix}ocaml-fileutils-devel >= 0.4.0
 
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
+
 %description
 This library uses type-conv to dump OCaml data structure using OCaml data
 notation. This kind of data dumping helps to write OCaml code generator,

@@ -18,6 +18,11 @@ BuildRequires:	%{?scl_prefix}ocaml >= 3.10.2
 BuildRequires:	%{?scl_prefix}ocaml-findlib-devel
 BuildRequires:	%{?scl_prefix}ocaml-ounit-devel >= 2.0.0
 
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
+
 %description
 Generate OCaml modules from source files.
 
