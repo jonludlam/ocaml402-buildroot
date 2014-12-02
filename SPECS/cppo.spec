@@ -1,18 +1,18 @@
 %global scl jonludlam-ocaml4021
-%{?scl:%scl_package ocaml-ounit}
+%{?scl:%scl_package cppo}
 %{!?scl:%global pkg_name %{name}}
 
 %define _use_internal_dependency_generator 0
 %define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
 %define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
 
-Name:           cppo
+Name:           %{?scl_prefix}cppo
 Version:        0.9.3
 Release:        3%{?dist}
 Summary:        Equivalent of the C preprocessor for OCaml
 License:        BSD3
 URL:            http://mjambon.com/cppo.html
-Source0:        https://github.com/mjambon/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/mjambon/%{pkg_name}/archive/v%{version}/%{pkg_name}-%{version}.tar.gz
 
 BuildRequires:  %{?scl_prefix}ocaml
 
@@ -20,7 +20,7 @@ BuildRequires:  %{?scl_prefix}ocaml
 Equivalent of the C preprocessor for OCaml.
 
 %prep
-%setup -q
+%setup -q -n %{pkg_name}-%{version}
 
 %build
 %{?scl:scl enable %{scl} "}

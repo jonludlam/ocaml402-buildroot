@@ -1,8 +1,16 @@
+%global scl jonludlam-ocaml4021
+%{?scl:%scl_package ocaml-fileutils}
+%{!?scl:%global pkg_name %{name}}
+
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
 %global opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
-Name:           ocaml-fileutils
+Name:           %{?scl_prefix}ocaml-fileutils
 Version:        0.4.5
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        OCaml library for common file and filename operations
 
 License:        LGPLv2 with exceptions
@@ -10,11 +18,11 @@ URL:            https://forge.ocamlcore.org/projects/ocaml-fileutils/
 Source0:        https://forge.ocamlcore.org/frs/download.php/1194/ocaml-fileutils-%{version}.tar.gz
 ExcludeArch:    sparc64 s390 s390x
 
-BuildRequires:  ocaml >= 4.00.1
-BuildRequires:  ocaml-findlib-devel >= 1.3.3-3
-BuildRequires:  ocaml-ocamldoc
+BuildRequires:  %{?scl_prefix}ocaml >= 4.00.1
+BuildRequires:  %{?scl_prefix}ocaml-findlib-devel >= 1.3.3-3
+BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
 %if 0%{?fedora} || 0%{?rhel} <= 6
-BuildRequires:  ocaml-ounit-devel
+BuildRequires:  %{?scl_prefix}ocaml-ounit-devel
 %endif
 
 
@@ -40,7 +48,7 @@ developing applications that use %{name}.
 
 
 %prep
-%setup -q
+%setup -q -n %{pkg_name}-%{version}
 
 # Disable the tests (RHEL 7 only) since they require ocaml-ounit.
 %if 0%{?rhel} >= 7
@@ -52,22 +60,27 @@ sed '/oUnit/d' < setup.ml.old > setup.ml
 
 
 %build
+%{?scl:scl enable %{scl} "}
 ocaml setup.ml -configure --prefix %{_prefix} --destdir $RPM_BUILD_ROOT
 make
-
+%{?scl:"}
 
 %install
+%{?scl:scl enable %{scl} "}
 export DESTDIR=$RPM_BUILD_ROOT
-export OCAMLFIND_DESTDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml
-mkdir -p $OCAMLFIND_DESTDIR $OCAMLFIND_DESTDIR/stublibs
+export OCAMLFIND_DESTDIR=\$RPM_BUILD_ROOT%{_libdir}/ocaml
+mkdir -p \$OCAMLFIND_DESTDIR \$OCAMLFIND_DESTDIR/stublibs
 
 # Set htmldir to current directory, then copy the docs (in api/)
 # as a %doc rule.
 make htmldir=. install
+%{?scl:"}
 
 
 %check
+%{?scl:scl enable %{scl} "}
 make test
+%{?scl:"}
 
 
 %files
@@ -94,6 +107,9 @@ make test
 
 
 %changelog
+* Tue Dec 2 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 0.4.5-11
+- SCLify
+
 * Sat Aug 30 2014 Richard W.M. Jones <rjones@redhat.com> - 0.4.5-10
 - ocaml-4.02.0 final rebuild.
 

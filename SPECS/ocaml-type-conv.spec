@@ -1,8 +1,14 @@
-%global debug_package %{nil}
+%global scl jonludlam-ocaml4021
+%{?scl:%scl_package ocaml-type-conv}
+%{!?scl:%global pkg_name %{name}}
 
-Name:           ocaml-type-conv
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
+Name:           %{?scl_prefix}ocaml-type-conv
 Version:        111.13.00
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OCaml base library for type conversion
 
 License:        LGPLv2+ with exceptions and BSD
@@ -10,10 +16,10 @@ URL:            http://www.ocaml.info/software.html#type_driven
 Source0:        https://ocaml.janestreet.com/ocaml-core/%{version}/individual/type_conv-%{version}.tar.gz
 #Patch0:         type-conv-META.patch
 
-BuildRequires:  ocaml >= 4.00.0
-BuildRequires:  ocaml-findlib
-BuildRequires:  ocaml-ocamldoc
-BuildRequires:  ocaml-camlp4-devel
+BuildRequires:  %{?scl_prefix}ocaml >= 4.00.0
+BuildRequires:  %{?scl_prefix}ocaml-findlib
+BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
+BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
 
 %description
 The type-conv mini library factors out functionality needed by
@@ -27,20 +33,26 @@ ability to use these preprocessors simultaneously.
 #dos2unix LICENSE.Tywith
 
 %build
+%{?scl:scl enable %{scl} "}
 make
+%{?scl:"}
 
 %install
+%{?scl:scl enable %{scl} "}
 export DESTDIR=%{buildroot}
 export OCAMLFIND_DESTDIR=%{buildroot}/%{_libdir}/ocaml
-mkdir -p $OCAMLFIND_DESTDIR
+mkdir -p \$OCAMLFIND_DESTDIR
 make install
-
+%{?scl:"}
 
 %files
 %doc CHANGES.txt COPYRIGHT.txt INRIA-DISCLAIMER.txt INSTALL.txt LICENSE-Tywith.txt LICENSE.txt README.md THIRD-PARTY.txt
 %{_libdir}/ocaml/type_conv
 
 %changelog
+* Tue Dec 2 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 111.13.00-2
+- SCLify
+
 * Wed Jul 16 2014 David Scott <dave.scott@citrix.com> - 111.13.00-1
 - Updated to 111.13.00 for Mirage compatibility
 

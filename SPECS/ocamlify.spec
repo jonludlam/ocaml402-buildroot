@@ -1,18 +1,18 @@
 %global scl jonludlam-ocaml4021
-%{?scl:%scl_package ocaml-ounit}
+%{?scl:%scl_package ocamlify}
 %{!?scl:%global pkg_name %{name}}
 
 %define _use_internal_dependency_generator 0
 %define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
 %define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
 
-Name:		ocamlify
+Name:		%{?scl_prefix}ocamlify
 Version:	0.0.2
 Release:	2%{?dist}
 Summary:	Create OCaml source code by including whole files into OCaml string or string list
 License:	LGPL
 URL:		http://forge.ocamlcore.org/projects/ocamlify/
-Source0:	http://forge.ocamlcore.org/frs/download.php/1209/%{name}-%{version}.tar.gz
+Source0:	http://forge.ocamlcore.org/frs/download.php/1209/%{pkg_name}-%{version}.tar.gz
 
 BuildRequires:	%{?scl_prefix}ocaml >= 3.10.2
 BuildRequires:	%{?scl_prefix}ocaml-findlib
@@ -22,7 +22,7 @@ Create OCaml source code by including whole files into OCaml string or
 string list.
 
 %prep
-%setup -q
+%setup -q -n %{pkg_name}-%{version}
 
 %build
 %{?scl:scl enable %{scl} "}
