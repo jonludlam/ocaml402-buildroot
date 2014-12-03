@@ -1,13 +1,24 @@
-%global debug_package %{nil}
+%global scl jonludlam-ocaml4021
+%{?scl:%scl_package ocaml-odn}
+%{!?scl:%global pkg_name %{name}}
 
-Name:           ocaml-obuild
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
+Name:           %{?scl_prefix}ocaml-obuild
 Version:        0.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Simple build tool for OCaml programs
 License:        BSD2
 URL:            https://github.com/vincenthz/obuild
 Source0:        https://github.com/vincenthz/obuild/archive/v%{version}/obuild-%{version}.tar.gz
-BuildRequires:  ocaml
+BuildRequires:  %{?scl_prefix}ocaml
+
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
 
 %description
 The goal is to make a very simple build system for users and developers 
@@ -24,14 +35,17 @@ working, adapting parts where necessary to support OCaml fully.
 %setup -q -n obuild-%{version}
 
 %build
+%{?scl:scl enable %{scl} "}
 ./bootstrap
+%{?scl:"}
 
 %install
+%{?scl:scl enable %{scl} "}
 mkdir -p %{buildroot}/%{_bindir}
 install dist/build/obuild/obuild %{buildroot}/%{_bindir}
 install dist/build/obuild-simple/obuild-simple %{buildroot}/%{_bindir}
 install dist/build/obuild-from-oasis/obuild-from-oasis %{buildroot}/%{_bindir}
-
+%{?scl:"}
 
 %files
 %doc README.md TODO.md DESIGN.md LICENSE OBUILD_SPEC.md
@@ -40,6 +54,9 @@ install dist/build/obuild-from-oasis/obuild-from-oasis %{buildroot}/%{_bindir}
 %{_bindir}/obuild-from-oasis
 
 %changelog
+* Wed Dec 3 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 0.0.2-2
+- SCLify
+
 * Thu May 30 2013 David Scott <dave.scott@eu.citrix.com> - 0.0.2-1
 - Initial package
 
