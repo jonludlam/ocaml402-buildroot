@@ -1,19 +1,32 @@
-Name:		oasis
+%global scl jonludlam-ocaml4021
+%{?scl:%scl_package oasis}
+%{!?scl:%global pkg_name %{name}}
+
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
+Name:		%{?scl_prefix}oasis
 Version:	0.4.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Architecture for building OCaml libraries and applications
 
 License:	LGPL
 URL:		http://oasis.forge.ocamlcore.org/index.html
-Source0:	https://github.com/ocaml/oasis/archive/%{version}/%{name}-%{version}.tar.gz
+Source0:	https://github.com/ocaml/oasis/archive/%{version}/oasis-%{version}.tar.gz
 
-BuildRequires:	ocaml
-BuildRequires:	ocaml-camlp4-devel
-BuildRequires:	ocaml-findlib-devel
-BuildRequires:	ocamlify
-BuildRequires:	ocamlmod
-BuildRequires:	ocaml-ocamldoc
-BuildRequires:	ocaml-odn-devel
+BuildRequires:	%{?scl_prefix}ocaml
+BuildRequires:	%{?scl_prefix}ocaml-camlp4-devel
+BuildRequires:	%{?scl_prefix}ocaml-findlib-devel
+BuildRequires:	%{?scl_prefix}ocamlify
+BuildRequires:	%{?scl_prefix}ocamlmod
+BuildRequires:	%{?scl_prefix}ocaml-ocamldoc
+BuildRequires:	%{?scl_prefix}ocaml-odn-devel
+
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
 
 %description
 OASIS generates a full configure, build and install system for your
@@ -23,11 +36,11 @@ your project and creates everything required.
 %package        devel
 Summary:        Development files for %{name}
 Requires:       %{name} = %{version}-%{release}
-Requires:       ocaml-odn-devel%{?_isa}
+Requires:       %{?scl_prefix}ocaml-odn-devel%{?_isa}
 
 %description    devel
-The %{name}-devel package contains libraries and signature files for
-developing applications that use %{name}.
+The %{pkg_name}-devel package contains libraries and signature files for
+developing applications that use %{pkg_name}.
 
 # The auto-requirements script mistakenly thinks that the Oasis library
 # modules depend on OASISAstTypes.
@@ -37,18 +50,21 @@ developing applications that use %{name}.
 }
 
 %prep
-%setup -q
+%setup -q -n oasis-%{version}
 
 
 %build
+%{?scl:scl enable %{scl} "}
 ./configure --prefix %{_prefix} --destdir %{buildroot}
 make
-
+%{?scl:"}
 
 %install
+%{?scl:scl enable %{scl} "}
 export OCAMLFIND_DESTDIR=%{buildroot}/%{_libdir}/ocaml
-mkdir -p $OCAMLFIND_DESTDIR
+mkdir -p \$OCAMLFIND_DESTDIR
 make install
+%{?scl:"}
 
 
 %files
@@ -90,6 +106,9 @@ make install
 
 
 %changelog
+* Tue Dec 2 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 0.4.4-2
+- SCLify
+
 * Wed Mar 26 2014 Euan Harris <euan.harris@citrix.com> - 0.4.4-1
 - Initial package
 
