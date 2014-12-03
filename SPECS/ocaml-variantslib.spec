@@ -1,28 +1,34 @@
-%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
-%define debug_package %{nil}
+%global scl jonludlam-ocaml4021
+%{?scl:%scl_package ocaml-variantslib}
+%{!?scl:%global pkg_name %{name}}
 
-Name:           ocaml-variantslib
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
+%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
+
+Name:           %{?scl_prefix}ocaml-variantslib
 Version:        109.15.02
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OCaml variants as first class values
 
 Group:          Development/Libraries
 License:        Apache Software License 2.0
 URL:            https://github.com/janestreet/variantslib
 Source0:        https://ocaml.janestreet.com/ocaml-core/109.15.00/individual/variantslib-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExcludeArch:    sparc64 s390 s390x
 
-BuildRequires:  ocaml >= 4.00.1
-BuildRequires:  ocaml-findlib-devel
-BuildRequires:  ocaml-camlp4-devel
-BuildRequires:  ocaml-type-conv >= 109.53.02
-BuildRequires:  ocaml-ocamldoc
+BuildRequires:  %{?scl_prefix}ocaml >= 4.00.1
+BuildRequires:  %{?scl_prefix}ocaml-findlib-devel
+BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
+BuildRequires:  %{?scl_prefix}ocaml-type-conv >= 109.53.02
+BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
 
-%define _use_internal_dependency_generator 0
-%define __find_requires /usr/lib/rpm/ocaml-find-requires.sh
-%define __find_provides /usr/lib/rpm/ocaml-find-provides.sh
-
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
 
 %description
 OCaml variants as first class values.
@@ -42,6 +48,7 @@ developing applications that use %{name}.
 %setup -q -n variantslib-%{version}
 
 %build
+%{?scl:scl enable %{scl} "}
 ocaml setup.ml -configure --prefix %{_prefix} \
       --libdir %{_libdir} \
       --libexecdir %{_libexecdir} \
@@ -54,18 +61,22 @@ ocaml setup.ml -configure --prefix %{_prefix} \
       --sharedstatedir %{_sharedstatedir} \
       --destdir $RPM_BUILD_ROOT
 ocaml setup.ml -build
+%{?scl:"}
 
 
 %check
+%{?scl:scl enable %{scl} "}
 ocaml setup.ml -test
-
+%{?scl:"}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 export DESTDIR=$RPM_BUILD_ROOT
 export OCAMLFIND_DESTDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml
 mkdir -p $OCAMLFIND_DESTDIR $OCAMLFIND_DESTDIR/stublibs
+%{?scl:scl enable %{scl} "}
 ocaml setup.ml -install
+%{?scl:"}
 
 
 %clean
@@ -94,5 +105,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 3 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 109.15.02-2
+- SCLify
+
 * Wed Jan 01 2014 Edvard Fagerholm <edvard.fagerholm@gmail.com> - 109.15.02-1
 - Initial package for Fedora 20.

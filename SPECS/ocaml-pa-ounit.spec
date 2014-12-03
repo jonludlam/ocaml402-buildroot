@@ -1,9 +1,16 @@
-%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
-%define debug_package %{nil}
+%global scl jonludlam-ocaml4021
+%{?scl:%scl_package ocaml-pa-ounit}
+%{!?scl:%global pkg_name %{name}}
 
-Name:           ocaml-pa-ounit
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
+%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
+
+Name:           %{?scl_prefix}ocaml-pa-ounit
 Version:        111.28.00
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Syntax extension for in-line tests in code.
 
 Group:          Development/Libraries
@@ -12,15 +19,15 @@ URL:            https://github.com/janestreet/pa_ounit
 Source0:        https://ocaml.janestreet.com/ocaml-core/%{version}/individual/pa_ounit-%{version}.tar.gz
 ExcludeArch:    sparc64 s390 s390x
 
-BuildRequires:  ocaml >= 4.00.1
-BuildRequires:  ocaml-findlib-devel
-BuildRequires:  ocaml-camlp4-devel
-BuildRequires:  ocaml-ounit-devel
+BuildRequires:  %{?scl_prefix}ocaml >= 4.00.1
+BuildRequires:  %{?scl_prefix}ocaml-findlib-devel
+BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
+BuildRequires:  %{?scl_prefix}ocaml-ounit-devel
 
-%define _use_internal_dependency_generator 0
-%define __find_requires /usr/lib/rpm/ocaml-find-requires.sh
-%define __find_provides /usr/lib/rpm/ocaml-find-provides.sh
-
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
 
 %description
 Pa_ounit is a syntax extension that helps writing in-line tests in ocaml code.
@@ -41,6 +48,7 @@ developing applications that use %{name}.
 %setup -q -n pa_ounit-%{version}
 
 %build
+%{?scl:scl enable %{scl} "}
 ocaml setup.ml -configure --prefix %{_prefix} \
       --libdir %{_libdir} \
       --libexecdir %{_libexecdir} \
@@ -52,10 +60,13 @@ ocaml setup.ml -configure --prefix %{_prefix} \
       --localstatedir %{_localstatedir} \
       --sharedstatedir %{_sharedstatedir}
 ocaml setup.ml -build
+%{?scl:"}
 
 
 %check
+%{?scl:scl enable %{scl} "}
 ocaml setup.ml -test
+%{?scl:"}
 
 
 %install
@@ -63,7 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 export DESTDIR=$RPM_BUILD_ROOT
 export OCAMLFIND_DESTDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml
 mkdir -p $OCAMLFIND_DESTDIR $OCAMLFIND_DESTDIR/stublibs
+%{?scl:scl enable %{scl} "}
 ocaml setup.ml -install
+%{?scl:"}
 
 
 %clean
@@ -94,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 3 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 111.28.00-2
+- SCLify
+
 * Tue Oct 14 2014 David Scott <dave.scott@citrix.com> - 111.28.00-1
 - Update to 111.28.00
 
