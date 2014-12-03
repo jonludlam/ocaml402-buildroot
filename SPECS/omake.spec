@@ -1,16 +1,27 @@
+%global scl jonludlam-ocaml4021
+%{?scl:%scl_package omake}
+%{!?scl:%global pkg_name %{name}}
+
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
 Version: 0.9.8.6
 Release: 1%{?dist}
 Summary: The omake build system
-Name: omake
+Name: %{?scl_prefix}omake
 URL: http://omake.metaprl.org/
 Source0: http://pkgs.fedoraproject.org/repo/pkgs/ocaml-omake/omake-0.9.8.6-0.rc1.tar.gz/fe39a476ef4e33b7ba2ca77a6bcaded2/omake-0.9.8.6-0.rc1.tar.gz
 Patch0: omake-1-warnings
 License: GPL
 BuildRequires: make
 BuildRequires: ncurses-devel
-BuildRequires: ocaml >= 3.09.2
+BuildRequires: %{?scl_prefix}ocaml >= 3.09.2
 
-%define debug_package %{nil}
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
 
 %description
 
@@ -27,26 +38,29 @@ features, including:
   restarts whenever you modify a source file.
 
 %prep
-%setup -q
+%setup -q -n omake-%{version}
 %patch0 -p1 -b ~omake-1-warnings
 
 %build
+%{?scl:scl enable %{scl} "}
 INSTALL_ROOT=$RPM_BUILD_ROOT\
    PREFIX=%{_prefix}\
    BINDIR=%{_bindir}\
    LIBDIR=%{_libdir}\
    make all
+%{?scl:"}
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/omake
 
+%{?scl:scl enable %{scl} "}
 INSTALL_ROOT=$RPM_BUILD_ROOT\
    PREFIX=%{_prefix}\
    BINDIR=%{_bindir}\
    LIBDIR=%{_libdir}\
    make install
-
+%{?scl:"}
 chmod +w $RPM_BUILD_ROOT/%{_bindir}/*
 
 
