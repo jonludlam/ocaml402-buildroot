@@ -12,7 +12,7 @@ Release:	2%{?dist}
 Summary:	Create OCaml source code by including whole files into OCaml string or string list
 License:	LGPL
 URL:		http://forge.ocamlcore.org/projects/ocamlify/
-Source0:	http://forge.ocamlcore.org/frs/download.php/1209/%{pkg_name}-%{version}.tar.gz
+Source0:	http://forge.ocamlcore.org/frs/download.php/1209/ocamlify-%{version}.tar.gz
 
 BuildRequires:	%{?scl_prefix}ocaml >= 3.10.2
 BuildRequires:	%{?scl_prefix}ocaml-findlib

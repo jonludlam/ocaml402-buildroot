@@ -12,7 +12,7 @@ Release:	2%{?dist}
 Summary:	Generate OCaml modules from source files
 License:	LGPL
 URL:		http://forge.ocamlcore.org/projects/ocamlmod/
-Source0:	http://forge.ocamlcore.org/frs/download.php/1350/%{pkg_name}-%{version}.tar.gz
+Source0:	http://forge.ocamlcore.org/frs/download.php/1350/ocamlmod-%{version}.tar.gz
 
 BuildRequires:	%{?scl_prefix}ocaml >= 3.10.2
 BuildRequires:	%{?scl_prefix}ocaml-findlib-devel

@@ -15,7 +15,7 @@ Summary:        Unit test framework for OCaml
 
 License:        MIT
 URL:            http://ounit.forge.ocamlcore.org/
-Source0:        http://forge.ocamlcore.org/frs/download.php/886/ounit-%{version}.tar.gz
+Source0:        http://forge.ocamlcore.org/frs/download.php/1258/ounit-%{version}.tar.gz
 ExcludeArch:    sparc64 s390 s390x
 
 BuildRequires:  %{?scl_prefix}ocaml >= 3.10.0

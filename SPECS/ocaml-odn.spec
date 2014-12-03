@@ -35,7 +35,7 @@ like OASIS.
 %package        devel
 Summary:        Development files for %{name}
 Requires:       %{name} = %{version}-%{release}
-BuildRequires:	%{?scl_prefix}ocaml-type-conv%{_isa} >= 108.07.01
+Requires:	%{?scl_prefix}ocaml-type-conv%{_isa} >= 108.07.01
 
 %description    devel
 The %{name}-devel package contains libraries and signature files for

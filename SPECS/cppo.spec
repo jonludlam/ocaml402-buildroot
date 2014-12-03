@@ -12,7 +12,7 @@ Release:        3%{?dist}
 Summary:        Equivalent of the C preprocessor for OCaml
 License:        BSD3
 URL:            http://mjambon.com/cppo.html
-Source0:        https://github.com/mjambon/%{pkg_name}/archive/v%{version}/%{pkg_name}-%{version}.tar.gz
+Source0:        https://github.com/mjambon/cppo/archive/v%{version}/cppo-%{version}.tar.gz
 
 BuildRequires:  %{?scl_prefix}ocaml
 
