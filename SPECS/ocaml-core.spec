@@ -9,7 +9,7 @@
 %define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
 Name:           %{?scl_prefix}ocaml-core
-Version:        111.28.00
+Version:        112.01.00
 Release:        2%{?dist}
 Summary:        System-independent part of Jane Street's Core.
 
@@ -17,6 +17,7 @@ Group:          Development/Libraries
 License:        Apache Software License 2.0
 URL:            https://github.com/janestreet/core_kernel
 Source0:        https://ocaml.janestreet.com/ocaml-core/%{version}/individual/core-%{version}.tar.gz
+Patch0:         fix-4.03
 ExcludeArch:    sparc64 s390 s390x
 
 BuildRequires:  %{?scl_prefix}ocaml >= 4.00.1
@@ -37,6 +38,7 @@ BuildRequires:  %{?scl_prefix}ocaml-typerep-devel
 BuildRequires:  %{?scl_prefix}ocaml-variantslib-devel
 BuildRequires:  %{?scl_prefix}ocaml-compiler-libs
 BuildRequires:  %{?scl_prefix}ocaml-core-kernel-devel
+BuildRequires:  %{?scl_prefix}ocaml-custom-printf
 BuildRequires:  chrpath
 
 %if 0%{?scl:1}
@@ -78,6 +80,7 @@ developing applications that use %{name}.
 
 %prep
 %setup -q -n core-%{version}
+%patch0 -p1
 
 %build
 %{?scl:scl enable %{scl} "}

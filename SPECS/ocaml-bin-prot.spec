@@ -9,8 +9,8 @@
 %global opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
 Name:           %{?scl_prefix}ocaml-bin-prot
-Version:        111.03.00
-Release:        2%{?dist}
+Version:        112.01.00
+Release:        1%{?dist}
 Summary:        Read and write OCaml values in a type-safe binary protocol
 
 Group:          Development/Libraries
@@ -18,12 +18,12 @@ License:        Apache Software License 2.0
 URL:            http://forge.ocamlcore.org/projects/bin_prot
 Source0:        https://ocaml.janestreet.com/ocaml-core/%{version}/individual/bin_prot-%{version}.tar.gz
 
-BuildRequires:  %{?scl_prefix}ocaml >= 3.12.0
+BuildRequires:  %{?scl_prefix}ocaml >= 4.00.0
 BuildRequires:  %{?scl_prefix}ocaml-findlib-devel
 BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
 BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
 BuildRequires:  %{?scl_prefix}ocaml-ounit-devel
-BuildRequires:  %{?scl_prefix}ocaml-type-conv >= 109.53.02
+BuildRequires:  %{?scl_prefix}ocaml-type-conv >= 112.01.00
 BuildRequires:  chrpath
 
 %if 0%{?scl:1}
@@ -113,7 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,-)
-%doc CHANGES.txt README.md TODO.txt
+%doc CHANGES.md README.md TODO.txt
 %if %opt
 %{_libdir}/ocaml/bin_prot/*.a
 %{_libdir}/ocaml/bin_prot/*.cmxa
@@ -122,6 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 4 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 112.01.00-1
+- Update to 112.01.00
+
 * Wed Dec 3 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 111.03.00-2
 - SCLify
 

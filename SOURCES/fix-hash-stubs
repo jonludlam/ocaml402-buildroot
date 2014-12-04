@@ -1,0 +1,37 @@
+commit 91eaf079074b309820b1e9a93e3309e8f3998a4a
+Author: Jon Ludlam <jonathan.ludlam@citrix.com>
+Date:   Thu Dec 4 16:15:06 2014 +0000
+
+    Fix compilation on CentOS 6 with OCaml 4.03.
+    
+    OCaml no longer typedefs uint32 in config.h, so references
+    should be replace with the posix uint32_t.
+    
+    Also fixes it on systems with the patch from 4.03 backported,
+    notably Fedora.
+    
+    See http://caml.inria.fr/mantis/view.php?id=6517
+    
+    Signed-off-by: Jon Ludlam <jonathan.ludlam@citrix.com>
+
+diff --git a/lib/hash_stubs.c b/lib/hash_stubs.c
+index 2a48588..6acd7d1 100644
+--- a/lib/hash_stubs.c
++++ b/lib/hash_stubs.c
+@@ -12,14 +12,14 @@
+ 
+ CAMLprim value caml_hash_string (value string) 
+ {
+-  uint32 h;
++  uint32_t h;
+   h = caml_hash_mix_string (0, string);
+   FINAL_MIX_AND_RETURN(h)
+ }
+ 
+ CAMLprim value caml_hash_double (value d)
+ {
+-  uint32 h;
++  uint32_t h;
+   h = caml_hash_mix_double (0, Double_val(d));
+   FINAL_MIX_AND_RETURN (h);
+ }

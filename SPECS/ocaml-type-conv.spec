@@ -7,8 +7,8 @@
 %define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
 
 Name:           %{?scl_prefix}ocaml-type-conv
-Version:        111.13.00
-Release:        2%{?dist}
+Version:        112.01.00
+Release:        1%{?dist}
 Summary:        OCaml base library for type conversion
 
 License:        LGPLv2+ with exceptions and BSD
@@ -16,7 +16,7 @@ URL:            http://www.ocaml.info/software.html#type_driven
 Source0:        https://ocaml.janestreet.com/ocaml-core/%{version}/individual/type_conv-%{version}.tar.gz
 #Patch0:         type-conv-META.patch
 
-BuildRequires:  %{?scl_prefix}ocaml >= 4.00.0
+BuildRequires:  %{?scl_prefix}ocaml >= 4.02.0
 BuildRequires:  %{?scl_prefix}ocaml-findlib
 BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
 BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
@@ -51,10 +51,13 @@ make install
 %{?scl:"}
 
 %files
-%doc CHANGES.txt COPYRIGHT.txt INRIA-DISCLAIMER.txt INSTALL.txt LICENSE-Tywith.txt LICENSE.txt README.md THIRD-PARTY.txt
+%doc CHANGES.md COPYRIGHT.txt INRIA-DISCLAIMER.txt LICENSE-Tywith.txt LICENSE.txt README.md THIRD-PARTY.txt
 %{_libdir}/ocaml/type_conv
 
 %changelog
+* Thu Dec 4 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 112.01.00-1
+- Update to 112.01.00
+
 * Tue Dec 2 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 111.13.00-2
 - SCLify
 

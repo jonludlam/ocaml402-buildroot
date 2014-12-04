@@ -7,8 +7,8 @@
 %define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
 
 Name:           %{?scl_prefix}ocaml-sexplib
-Version:        111.25.00
-Release:        2%{?dist}
+Version:        112.01.00
+Release:        1%{?dist}
 Summary:        Convert values to and from s-expressions in OCaml
 
 License:        LGPLv2+ with exceptions and BSD
@@ -94,7 +94,10 @@ make install
 %{_libdir}/ocaml/sexplib_unix/*.cmxa
 
 %changelog
-* Wed Dec 3 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 111.25.00-1
+* Thu Dec 4 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 112.01.00-1
+- Update to 112.01.00
+
+* Wed Dec 3 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 111.25.00-2
 - SCLify
 
 * Thu Oct 23 2014 David Scott <dave.scott@citrix.com> - 111.25.00-1

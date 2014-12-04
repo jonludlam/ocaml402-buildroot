@@ -9,14 +9,15 @@
 %define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
 Name:           %{?scl_prefix}ocaml-core-kernel
-Version:        111.28.00
-Release:        2%{?dist}
+Version:        112.01.00
+Release:        1%{?dist}
 Summary:        System-independent part of Jane Street's Core.
 
 Group:          Development/Libraries
 License:        Apache Software License 2.0
 URL:            https://github.com/janestreet/core_kernel
 Source0:        https://ocaml.janestreet.com/ocaml-core/%{version}/individual/core_kernel-%{version}.tar.gz
+Patch0:         fix-hash-stubs
 ExcludeArch:    sparc64 s390 s390x
 
 BuildRequires:  %{?scl_prefix}ocaml >= 4.00.1
@@ -64,6 +65,7 @@ developing applications that use %{name}.
 
 %prep
 %setup -q -n core_kernel-%{version}
+%patch0 -p1 
 
 %build
 %{?scl:scl enable %{scl} "}
@@ -126,6 +128,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/ocaml/core_kernel/*.mli
 
 %changelog
+* Thu Dec 4 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 112.01.00-1
+- Update to 112.01.00
+
 * Wed Dec 3 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 111.28.00-2
 - SCLify
 
