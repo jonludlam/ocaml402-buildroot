@@ -1,5 +1,5 @@
 %global scl jonludlam-ocaml4021
-%{?scl:%scl_package ocaml-pa-bench}
+%{?scl:%scl_package ocaml-core-kernel}
 %{!?scl:%global pkg_name %{name}}
 
 %define _use_internal_dependency_generator 0
@@ -8,32 +8,47 @@
 
 %define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
-
-Name:           %{?scl_prefix}ocaml-pa-bench
+Name:           %{?scl_prefix}ocaml-core-kernel
 Version:        111.28.00
 Release:        2%{?dist}
-Summary:        Syntax extension for inline benchmarks.
+Summary:        System-independent part of Jane Street's Core.
 
 Group:          Development/Libraries
 License:        Apache Software License 2.0
-URL:            https://github.com/janestreet/pa_bench
-Source0:        https://ocaml.janestreet.com/ocaml-core/%{version}/individual/pa_bench-%{version}.tar.gz
+URL:            https://github.com/janestreet/core_kernel
+Source0:        https://ocaml.janestreet.com/ocaml-core/%{version}/individual/core_kernel-%{version}.tar.gz
 ExcludeArch:    sparc64 s390 s390x
 
 BuildRequires:  %{?scl_prefix}ocaml >= 4.00.1
+BuildRequires:  %{?scl_prefix}ocaml-findlib
 BuildRequires:  %{?scl_prefix}ocaml-findlib-devel
 BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
+BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
+BuildRequires:  %{?scl_prefix}ocaml-bin-prot-devel
+BuildRequires:  %{?scl_prefix}ocaml-comparelib-devel
+BuildRequires:  %{?scl_prefix}ocaml-fieldslib-devel
+BuildRequires:  %{?scl_prefix}ocaml-herelib-devel
+BuildRequires:  %{?scl_prefix}ocaml-pa-bench-devel
 BuildRequires:  %{?scl_prefix}ocaml-pa-ounit-devel
-BuildRequires:  %{?scl_prefix}ocaml-type-conv
+BuildRequires:  %{?scl_prefix}ocaml-pa-pipebang-devel
+BuildRequires:  %{?scl_prefix}ocaml-pa-test-devel
+BuildRequires:  %{?scl_prefix}ocaml-enumerate-devel
+BuildRequires:  %{?scl_prefix}ocaml-sexplib-devel
+BuildRequires:  %{?scl_prefix}ocaml-typerep-devel
+BuildRequires:  %{?scl_prefix}ocaml-variantslib-devel
+BuildRequires:  chrpath
 
 %if 0%{?scl:1}
 BuildRequires:  %{?scl_prefix}build
 BuildRequires:  %{?scl_prefix}runtime
 %endif
 
-
 %description
-Syntax extension for inline benchmarks.
+Core is an industrial-strength alternative to the OCaml standard
+library.  It was developed by Jane Street, which is the largest
+industrial user of OCaml. Core_kernel is the system-independent
+part of Core.  It is aimed for cases when the full Core is not
+available, such as in Javascript.
 
 
 %package        devel
@@ -48,7 +63,7 @@ developing applications that use %{name}.
 
 
 %prep
-%setup -q -n pa_bench-%{version}
+%setup -q -n core_kernel-%{version}
 
 %build
 %{?scl:scl enable %{scl} "}
@@ -61,7 +76,8 @@ ocaml setup.ml -configure --prefix %{_prefix} \
       --mandir %{_mandir} \
       --datadir %{_datadir} \
       --localstatedir %{_localstatedir} \
-      --sharedstatedir %{_sharedstatedir}
+      --sharedstatedir %{_sharedstatedir} \
+      --destdir $RPM_BUILD_ROOT
 ocaml setup.ml -build
 %{?scl:"}
 
@@ -79,6 +95,8 @@ mkdir -p $OCAMLFIND_DESTDIR $OCAMLFIND_DESTDIR/stublibs
 %{?scl:scl enable %{scl} "}
 ocaml setup.ml -install
 %{?scl:"}
+strip $OCAMLFIND_DESTDIR/stublibs/dll*.so
+chrpath --delete $OCAMLFIND_DESTDIR/stublibs/dll*.so
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -86,26 +104,26 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc LICENSE.txt  THIRD-PARTY.txt INRIA-DISCLAIMER.txt
-%{_libdir}/ocaml/pa_bench
+%doc COPYRIGHT.txt LICENSE.txt THIRD-PARTY.txt INRIA-DISCLAIMER.txt MLton-license.txt
+%{_libdir}/ocaml/core_kernel
 %if %opt
-%exclude %{_libdir}/ocaml/pa_bench/*.a
-%exclude %{_libdir}/ocaml/pa_bench/*.cmxa
+%exclude %{_libdir}/ocaml/core_kernel/*.a
+%exclude %{_libdir}/ocaml/core_kernel/*.cmxa
 %endif
-%exclude %{_libdir}/ocaml/pa_bench/*.ml
-%exclude %{_libdir}/ocaml/pa_bench/*.mli
-
+%exclude %{_libdir}/ocaml/core_kernel/*.ml
+%exclude %{_libdir}/ocaml/core_kernel/*.mli
+%{_libdir}/ocaml/stublibs/*.so
+%{_libdir}/ocaml/stublibs/*.so.owner
 
 %files devel
 %defattr(-,root,root,-)
-%doc LICENSE.txt  THIRD-PARTY.txt INRIA-DISCLAIMER.txt
+%doc COPYRIGHT.txt LICENSE.txt THIRD-PARTY.txt INRIA-DISCLAIMER.txt README.md MLton-license.txt
 %if %opt
-%{_libdir}/ocaml/pa_bench/*.a
-%{_libdir}/ocaml/pa_bench/*.cmxa
+%{_libdir}/ocaml/core_kernel/*.a
+%{_libdir}/ocaml/core_kernel/*.cmxa
 %endif
-%{_libdir}/ocaml/pa_bench/*.ml
-%{_libdir}/ocaml/pa_bench/*.mli
-
+%{_libdir}/ocaml/core_kernel/*.ml
+%{_libdir}/ocaml/core_kernel/*.mli
 
 %changelog
 * Wed Dec 3 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 111.28.00-2

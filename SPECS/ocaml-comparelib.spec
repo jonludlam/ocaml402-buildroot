@@ -3,7 +3,7 @@
 %{!?scl:%global pkg_name %{name}}
 
 %define _use_internal_dependency_generator 0
-%define __find_requires scl enable %{scl} /usr/lib/rpm/ocaml-find-requires.sh -c
+%define __find_requires scl enable %{scl} "/usr/lib/rpm/ocaml-find-requires.sh -c"
 %define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
 
 %define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
