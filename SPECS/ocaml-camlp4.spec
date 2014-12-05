@@ -1,4 +1,12 @@
-%global scl jonludlam-ocaml4021
+# if the build is running on copr
+%if 0%{?copr_username:1}
+# define your copr_username and copr_projectname
+%global scl %{copr_username}-%{copr_projectname}
+%else
+# different build system need only name of the collection, ocaml4021 in this case
+%global scl ocaml4021
+%endif
+
 %{?scl:%scl_package ocaml-camlp4}
 %{!?scl:%global pkg_name %{name}}
 
@@ -30,8 +38,10 @@ URL:           https://github.com/ocaml/camlp4
 Source0:       https://github.com/ocaml/camlp4/archive/%{gitcommit}/camlp4-%{gitcommit}.tar.gz
 
 # This causes the RPMs to be explicitly SCL ones.
-BuildRequires: jonludlam-ocaml4021-build
-BuildRequires: jonludlam-ocaml4021-runtime
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
  
 # This package used to be part of the upstream compiler.  We still
 # need to keep it in lock step with the compiler, so whenever a new

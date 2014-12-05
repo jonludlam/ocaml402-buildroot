@@ -1,4 +1,12 @@
-%global scl jonludlam-ocaml4021
+# if the build is running on copr
+%if 0%{?copr_username:1}
+# define your copr_username and copr_projectname
+%global scl %{copr_username}-%{copr_projectname}
+%else
+# different build system need only name of the collection, ocaml4021 in this case
+%global scl ocaml4021
+%endif
+
 %{?scl:%scl_package ocaml-pa-test}
 %{!?scl:%global pkg_name %{name}}
 

@@ -1,4 +1,12 @@
-%global scl jonludlam-ocaml4021
+# if the build is running on copr
+%if 0%{?copr_username:1}
+# define your copr_username and copr_projectname
+%global scl %{copr_username}-%{copr_projectname}
+%else
+# different build system need only name of the collection, ocaml4021 in this case
+%global scl ocaml4021
+%endif
+
 %{?scl:%scl_package ocaml-findlib}
 %{!?scl:%global pkg_name %{name}}
 
@@ -20,15 +28,16 @@ Source0:        http://download.camlcity.org/download/findlib-%{version}.tar.gz
 # Use ocamlopt -g patch to include debug information.
 Patch1:         findlib-1.4-add-debug.patch
 
-# This causes the RPMs to be explicitly SCL ones.
-BuildRequires: jonludlam-ocaml4021-build
-BuildRequires: jonludlam-ocaml4021-runtime
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
 
-BuildRequires:  jonludlam-ocaml4021-ocaml
-BuildRequires:  jonludlam-ocaml4021-ocaml-camlp4-devel
-BuildRequires:  jonludlam-ocaml4021-ocaml-labltk-devel
-BuildRequires:  jonludlam-ocaml4021-ocaml-compiler-libs
-BuildRequires:  jonludlam-ocaml4021-ocaml-ocamldoc
+BuildRequires:  %{?scl_prefix}ocaml
+BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
+BuildRequires:  %{?scl_prefix}ocaml-labltk-devel
+BuildRequires:  %{?scl_prefix}ocaml-compiler-libs
+BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
 BuildRequires:  m4, ncurses-devel
 BuildRequires:  gawk
 Requires:       %{?scl_prefix}ocaml

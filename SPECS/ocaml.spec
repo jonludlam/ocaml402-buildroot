@@ -1,4 +1,12 @@
-%global scl jonludlam-ocaml4021
+# if the build is running on copr
+%if 0%{?copr_username:1}
+# define your copr_username and copr_projectname
+%global scl %{copr_username}-%{copr_projectname}
+%else
+# different build system need only name of the collection, ocaml4021 in this case
+%global scl ocaml4021
+%endif
+
 %{?scl:%scl_package ocaml}
 %{!?scl:%global pkg_name %{name}}
 
@@ -90,8 +98,9 @@ BuildRequires:  mesa-libGL-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  chrpath
 
-# This causes the RPMs to be explicitly SCL ones.
-BuildRequires: jonludlam-ocaml4021-build
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+%endif
 
 # git is required for patch management.
 BuildRequires:  git

@@ -4,7 +4,7 @@
 %global scl %{copr_username}-%{copr_projectname}
 %else
 # different build system need only name of the collection, ocaml4021 in this case
-%global scl jonludlam-ocaml4021
+%global scl ocaml4021
 %endif
 %scl_package %scl
 
