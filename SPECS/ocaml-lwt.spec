@@ -1,29 +1,49 @@
-%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
-%define debug_package %{nil}
+# if the build is running on copr
+%if 0%{?copr_username:1}
+# define your copr_username and copr_projectname
+%global scl %{copr_username}-%{copr_projectname}
+%else
+# different build system need only name of the collection, ocaml4021 in this case
+%global scl ocaml4021
+%endif
 
-Name:           ocaml-lwt
+%{?scl:%scl_package ocaml-lwt}
+%{!?scl:%global pkg_name %{name}}
+
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} "/usr/lib/rpm/ocaml-find-requires.sh -c"
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
+%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
+
+Name:           %{?scl_prefix}ocaml-lwt
 Version:        2.4.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OCaml lightweight thread library
 
 License:        LGPLv2+ with exceptions
 URL:            http://ocsigen.org/lwt
-Source0:        https://github.com/ocsigen/lwt/archive/%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/ocsigen/lwt/archive/%{version}/ocaml-lwt-%{version}.tar.gz
 ExcludeArch:    sparc64 s390 s390x
 
 # Location of libev headers on Fedora is in /usr/include/libev/ev.h
 # so we need to patch the source accordingly.
 #Patch0:         lwt-2.2.0-libev.patch
 
-BuildRequires:  ocaml >= 3.10.0
-BuildRequires:  ocaml-findlib-devel
-BuildRequires:  ocaml-react-devel >= 1.0.0
+BuildRequires: %{?scl_prefix}ocaml >= 3.10.0
+BuildRequires:  %{?scl_prefix}ocaml-findlib-devel
+BuildRequires:  %{?scl_prefix}ocaml-react-devel >= 1.0.0
 #BuildRequires:  libev-devel
-BuildRequires:  ocaml-ocamldoc
-BuildRequires:  ocaml-text-devel
-BuildRequires:  ocaml-camlp4
-BuildRequires:  ocaml-camlp4-devel
-BuildRequires:  ocaml-ssl-devel
+BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
+BuildRequires:  %{?scl_prefix}ocaml-text-devel
+BuildRequires:  %{?scl_prefix}ocaml-camlp4
+BuildRequires:  %{?scl_prefix}ocaml-camlp4-devel
+BuildRequires:  %{?scl_prefix}ocaml-ssl-devel
+
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
 
 %description
 Lwt is a lightweight thread library for Objective Caml.  This library
@@ -51,15 +71,19 @@ iconv -f iso-8859-1 -t utf-8 < README.old > README
 
 %build
 export C_INCLUDE_PATH=/usr/include/libev
+%{?scl:scl enable %{scl} "}
 ./configure --enable-react --enable-text --disable-libev --enable-ssl
 make
+%{?scl:"}
 
 
 %install
 export DESTDIR=$RPM_BUILD_ROOT
 export OCAMLFIND_DESTDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml
 mkdir -p $OCAMLFIND_DESTDIR $OCAMLFIND_DESTDIR/stublibs
+%{?scl:scl enable %{scl} "}
 make install
+%{?scl:"}
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 
 strip $OCAMLFIND_DESTDIR/stublibs/dll*.so
