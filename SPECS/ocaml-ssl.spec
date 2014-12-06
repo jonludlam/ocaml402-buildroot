@@ -1,17 +1,36 @@
-%global debug_package %{nil}
+# if the build is running on copr
+%if 0%{?copr_username:1}
+# define your copr_username and copr_projectname
+%global scl %{copr_username}-%{copr_projectname}
+%else
+# different build system need only name of the collection, ocaml4021 in this case
+%global scl ocaml4021
+%endif
 
-Name:           ocaml-ssl
+%{?scl:%scl_package ocaml-ounit}
+%{!?scl:%global pkg_name %{name}}
+
+%define _use_internal_dependency_generator 0
+%define __find_requires scl enable %{scl} "/usr/lib/rpm/ocaml-find-requires.sh -c"
+%define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
+Name:           %{?scl_prefix}ocaml-ssl
 Version:        0.4.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Use OpenSSL from OCaml
 License:        LGPL
 URL:            http://downloads.sourceforge.net/project/savonet/ocaml-ssl
-Source0:        https://github.com/savonet/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/savonet/ocaml-ssl/archive/%{version}/ocaml-ssl-%{version}.tar.gz
 BuildRequires:  autoconf
 BuildRequires:  automake
-BuildRequires:  ocaml
-BuildRequires:  ocaml-findlib
+BuildRequires:  %{?scl_prefix}ocaml
+BuildRequires:  %{?scl_prefix}ocaml-findlib
 BuildRequires:  openssl-devel
+
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
 
 %description
 Use OpenSSL from OCaml.
@@ -26,19 +45,23 @@ The %{name}-devel package contains libraries and signature files for
 developing applications that use %{name}.
 
 %prep
-%setup -q
+%setup -q -n ocaml-ssl-%{version}
 
 %build
+%{?scl:scl enable %{scl} "}
 ./bootstrap
 ./configure
 make
+%{?scl:"}
 
 %install
 export OCAMLFIND_DESTDIR=%{buildroot}/%{_libdir}/ocaml
 mkdir -p $OCAMLFIND_DESTDIR
 mkdir -p $OCAMLFIND_DESTDIR/stublibs
 export OCAMLFIND_LDCONF=ignore
+%{?scl:scl enable %{scl} "}
 make install DESTDIR=%{buildroot}
+%{?scl:"}
 
 %files
 %doc CHANGES
@@ -61,6 +84,9 @@ make install DESTDIR=%{buildroot}
 %{_libdir}/ocaml/ssl/*.mli
 
 %changelog
+* Sat Dec 6 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 0.4.7-2
+- SCLify
+
 * Thu Oct 2 2014 Euan Harris <euan.harris@citrix.com> - 0.4.7-1
 - Update to 0.4.7 and get source from GitHub
 
