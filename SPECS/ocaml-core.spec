@@ -18,7 +18,7 @@
 
 Name:           %{?scl_prefix}ocaml-core
 Version:        112.01.00
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        System-independent part of Jane Street's Core.
 
 Group:          Development/Libraries
@@ -153,7 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/ocaml/core/*.mli
 
 %changelog
-* Wed Dec 3 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 111.28.00-2
+* Wed Dec 3 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 111.28.00-3
 - SCLify
 
 * Tue Oct 14 2014 David Scott <dave.scott@citrix.com> - 111.28.00-1

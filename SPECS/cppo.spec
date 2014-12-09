@@ -15,14 +15,15 @@
 %define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
 
 Name:           %{?scl_prefix}cppo
-Version:        0.9.3
-Release:        3%{?dist}
+Version:        1.1.2
+Release:        1%{?dist}
 Summary:        Equivalent of the C preprocessor for OCaml
 License:        BSD3
 URL:            http://mjambon.com/cppo.html
 Source0:        https://github.com/mjambon/cppo/archive/v%{version}/cppo-%{version}.tar.gz
 
 BuildRequires:  %{?scl_prefix}ocaml
+BuildRequires:  %{?scl_prefix}ocaml-findlib
 
 %if 0%{?scl:1}
 BuildRequires:  %{?scl_prefix}build
@@ -42,15 +43,24 @@ make
 
 
 %install
+export DESTDIR=$RPM_BUILD_ROOT
+export OCAMLFIND_DESTDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml
+mkdir -p $OCAMLFIND_DESTDIR $OCAMLFIND_DESTDIR/stublibs
 mkdir -p %{buildroot}/%{_bindir}
+%{?scl:scl enable %{scl} "}
 make install BINDIR=%{buildroot}/%{_bindir}
+%{?scl:"}
 
 %files
 %doc LICENSE 
-%doc README
+%doc README.md
 %{_bindir}/cppo
+%{_libdir}/ocaml/cppo_ocamlbuild
 
 %changelog
+* Tue Dec 9 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 1.1.2-1
+- New version
+
 * Mon Dec 1 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 0.9.3-3
 - SCLify
 
