@@ -3,8 +3,8 @@
 # define your copr_username and copr_projectname
 %global scl %{copr_username}-%{copr_projectname}
 %else
-# different build system need only name of the collection, ocaml4021 in this case
-%global scl ocaml4021
+# different build system need only name of the collection, ocaml402 in this case
+%global scl ocaml402
 %endif
 
 %{?scl:%scl_package ocaml-react}
@@ -13,6 +13,11 @@
 %define _use_internal_dependency_generator 0
 %define __find_requires scl enable %{scl} "/usr/lib/rpm/ocaml-find-requires.sh -c"
 %define __find_provides scl enable %{scl} /usr/lib/rpm/ocaml-find-provides.sh
+
+%if 0%{?scl:1}
+BuildRequires:  %{?scl_prefix}build
+BuildRequires:  %{?scl_prefix}runtime
+%endif
 
 %global opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
@@ -31,10 +36,6 @@ BuildRequires:  %{?scl_prefix}ocaml >= 3.11.0
 BuildRequires:  %{?scl_prefix}ocaml-findlib-devel
 BuildRequires:  %{?scl_prefix}ocaml-ocamldoc
 
-%if 0%{?scl:1}
-BuildRequires:  %{?scl_prefix}build
-BuildRequires:  %{?scl_prefix}runtime
-%endif
 
 %description
 React is an OCaml module for functional reactive programming (FRP). It

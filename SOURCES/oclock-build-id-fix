@@ -1,0 +1,13 @@
+diff --git a/Makefile b/Makefile
+index e2a0e14..5af696b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -54,7 +54,7 @@ native: oclock.cmxa liboclock.a oclock.a
+ lib%.a: %_stubs.o
+ 	ar crs $@ $<
+ dll%.so: %_stubs.o
+-	$(LD) -shared -o $@ $< -lrt
++	$(LD) --build-id -shared -o $@ $< -lrt
+ 
+ # Generic Ocaml compilation
+ %.cmo:%.ml

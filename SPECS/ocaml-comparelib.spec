@@ -3,8 +3,8 @@
 # define your copr_username and copr_projectname
 %global scl %{copr_username}-%{copr_projectname}
 %else
-# different build system need only name of the collection, ocaml4021 in this case
-%global scl ocaml4021
+# different build system need only name of the collection, ocaml402 in this case
+%global scl ocaml402
 %endif
 
 %{?scl:%scl_package ocaml-comparelib}
