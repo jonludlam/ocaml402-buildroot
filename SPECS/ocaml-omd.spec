@@ -25,7 +25,7 @@ Release:        1%{?dist}
 Summary:        A Markdown frontend in pure OCaml.
 License:        ISC
 URL:            https://github.com/ocaml/omd
-Source0:        https://github.com/ocaml/omd/archive/%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/ocaml/omd/archive/%{version}/ocaml-omd-%{version}.tar.gz
 Patch0:         ocaml-omd-setup.ml.patch
 BuildRequires:  %{?scl_prefix}ocaml
 BuildRequires:  %{?scl_prefix}ocaml-findlib

@@ -25,7 +25,7 @@ Release:        4%{?dist}
 Summary:        A JSON parser and printer for OCaml
 License:        BSD3
 URL:            http://mjambon.com/yojson.html
-Source0:        https://github.com/mjambon/yojson/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/mjambon/yojson/archive/v%{version}/ocaml-yojson-%{version}.tar.gz
 BuildRequires:  %{?scl_prefix}cppo
 BuildRequires:  %{?scl_prefix}ocaml
 BuildRequires:  %{?scl_prefix}ocaml-biniou-devel

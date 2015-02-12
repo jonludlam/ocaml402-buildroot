@@ -25,7 +25,7 @@ Release:        4%{?dist}
 Summary:        Compact, fast and extensible serialization format
 License:        BSD3
 URL:            http://mjambon.com/biniou.html
-Source0:        https://github.com/mjambon/biniou/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/mjambon/biniou/archive/v%{version}/ocaml-biniou-%{version}.tar.gz
 BuildRequires:  %{?scl_prefix}ocaml
 BuildRequires:  %{?scl_prefix}ocaml-easy-format-devel
 BuildRequires:  %{?scl_prefix}ocaml-findlib

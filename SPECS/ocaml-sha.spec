@@ -26,7 +26,7 @@ Release:        3%{?dist}
 Summary:        OCaml SHA
 License:        LGPL2.1
 URL:            https://github.com/vincenthz/ocaml-sha
-Source0:        https://github.com/vincenthz/ocaml-sha/archive/ocaml-sha-v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/vincenthz/ocaml-sha/archive/ocaml-sha-v%{version}/ocaml-sha-%{version}.tar.gz
 BuildRequires:  %{?scl_prefix}ocaml
 BuildRequires:  %{?scl_prefix}ocaml-findlib
 

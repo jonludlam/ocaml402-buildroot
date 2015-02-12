@@ -25,7 +25,7 @@ Release:        4%{?dist}
 Summary:        Indentation made easy
 License:        BSD
 URL:            http://mjambon.com/easy-format.html
-Source0:        https://github.com/mjambon/easy-format/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/mjambon/easy-format/archive/v%{version}/ocaml-easy-format-%{version}.tar.gz
 BuildRequires:  %{?scl_prefix}ocaml
 BuildRequires:  %{?scl_prefix}ocaml-findlib
 Obsoletes:      easy-format <= 1.0.1

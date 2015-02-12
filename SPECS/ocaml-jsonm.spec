@@ -25,7 +25,7 @@ Release:        2%{?dist}
 Summary:        Non-blocking streaming JSON codec for OCaml
 License:        BSD
 URL:            http://erratique.ch/software/jsonm
-Source0:        https://github.com/dbuenzli/jsonm/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/dbuenzli/jsonm/archive/v%{version}/ocaml-jsonm-%{version}.tar.gz
 Patch0:         ocaml-jsonm-setup.ml.patch
 BuildRequires:  %{?scl_prefix}ocaml
 BuildRequires:  %{?scl_prefix}ocaml-findlib
