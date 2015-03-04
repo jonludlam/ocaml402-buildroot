@@ -16,7 +16,7 @@
 
 Name:           %{?scl_prefix}utop
 Version:        1.16
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A toplevel for OCaml which can run in a terminal or in Emacs
 License:        BSD
 URL:            https://github.com/diml/utop
@@ -44,7 +44,7 @@ supports completion, colors, parenthesis matching, ...
 
 %build
 %{?scl:scl enable %{scl} "}
-ocaml setup.ml -configure --prefix %{_prefix} --destdir %{buildroot}
+ocaml setup.ml -configure --prefix %{_prefix} --destdir %{buildroot} --enable-camlp4
 ocaml setup.ml -build
 %{?scl:"}
 
@@ -65,6 +65,9 @@ ocaml setup.ml -install
 %{_scl_root}/usr/share/emacs/site-lisp/utop.el
 
 %changelog
+* Wed Mar 04 2015 Jon Ludlam <jonathan.ludlam@citrix.com> - 1.16-2
+- Enable camlp4
+
 * Tue Dec 9 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 1.16-1
 - SCLify
 

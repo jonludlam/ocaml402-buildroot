@@ -32,7 +32,7 @@
 
 Name:           %{?scl_prefix}ocaml
 Version:        4.02.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -106,7 +106,7 @@ BuildRequires:  %{?scl_prefix}build
 BuildRequires:  git
 
 Requires:       gcc
-Requires:       rpm-build >= 4.8.0
+BuildRequires:  rpm-build >= 4.8.0
 
 # Because we pass -c flag to ocaml-find-requires (to avoid circular
 # dependencies) we also have to explicitly depend on the right version
@@ -393,7 +393,7 @@ fi
 %{_libdir}/ocaml/threads/*.cma
 %{_libdir}/ocaml/fedora-ocaml-release
 %exclude %{_libdir}/ocaml/graphicsX11.cmi
-
+%exclude %{_libdir}/ocaml/stublibs/dllgraphics.so
 
 %files source
 %doc LICENSE
@@ -404,7 +404,7 @@ fi
 %doc LICENSE
 %{_libdir}/ocaml/graphicsX11.cmi
 %{_libdir}/ocaml/graphicsX11.mli
-
+%{_libdir}/ocaml/stublibs/dllgraphics.so
 
 %files ocamldoc
 %doc LICENSE
@@ -440,6 +440,10 @@ fi
 %endif
 
 %changelog
+* Wed Mar 04 2015 Jon Ludlam <jonathan.ludlam@citrix.com> - 4.02.1-2
+- Move rpmbuild to BuildRequires
+- Move dllgraphics.so to x11 subpackage
+
 * Thu Nov 27 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 4.02.1-1
 - Update to latest release and SCLify
 
