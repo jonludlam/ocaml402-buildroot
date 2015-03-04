@@ -27,6 +27,7 @@ License:        MIT
 URL:            https://github.com/ocamllabs/ocaml-ctypes/
 Source0:        https://github.com/ocamllabs/ocaml-ctypes/archive/ocaml-ctypes-%{version}.tar.gz
 Patch0:         ocaml-ctypes-0.2.1-std-gnu99.patch
+Patch1:         ctypes-403.patch
 BuildRequires:  %{?scl_prefix}ocaml
 BuildRequires:  %{?scl_prefix}ocaml-findlib
 BuildRequires:  libffi-devel
@@ -45,6 +46,7 @@ developing applications that use %{name}.
 %prep
 %setup -q -n ocaml-ctypes-ocaml-ctypes-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{?scl:scl enable %{scl} "}
