@@ -20,14 +20,13 @@ BuildRequires:  %{?scl_prefix}runtime
 %endif
 
 Name:           %{?scl_prefix}ocaml-ctypes
-Version:        0.2.2
-Release:        2%{?dist}
+Version:        0.3.4
+Release:        4%{?dist}
 Summary:        Library for binding to C libraries using pure OCaml
 License:        MIT
 URL:            https://github.com/ocamllabs/ocaml-ctypes/
-Source0:        https://github.com/ocamllabs/ocaml-ctypes/archive/ocaml-ctypes-%{version}.tar.gz
-Patch0:         ocaml-ctypes-0.2.1-std-gnu99.patch
-Patch1:         ctypes-403.patch
+Source0:        https://github.com/ocamllabs/ocaml-ctypes/archive/%{version}/ocaml-ctypes-%{version}.tar.gz
+Patch0:         ctypes-403.patch
 BuildRequires:  %{?scl_prefix}ocaml
 BuildRequires:  %{?scl_prefix}ocaml-findlib
 BuildRequires:  libffi-devel
@@ -44,9 +43,8 @@ The %{name}-devel package contains libraries and signature files for
 developing applications that use %{name}.
 
 %prep
-%setup -q -n ocaml-ctypes-ocaml-ctypes-%{version}
+%setup -q -n ocaml-ctypes-%{version}
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{?scl:scl enable %{scl} "}
@@ -65,7 +63,7 @@ make install
 %{?scl:"}
 
 %files
-%doc README.md LICENSE CHANGES
+%doc README.md LICENSE CHANGES.md
 %{_libdir}/ocaml/ctypes
 %exclude %{_libdir}/ocaml/ctypes/*.a
 %exclude %{_libdir}/ocaml/ctypes/*.cmxa
@@ -79,6 +77,9 @@ make install
 %{_libdir}/ocaml/ctypes/*.mli
 
 %changelog
+* Fri Mar 06 2015 Jon Ludlam <jonathan.ludlam@citrix.com> - 0.3.4-4
+- New version
+
 * Sun Dec 14 2014 Jon Ludlam <jonathan.ludlam@citrix.com> - 0.2.2-2
 - SCLify
 
