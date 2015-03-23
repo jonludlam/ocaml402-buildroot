@@ -7,7 +7,7 @@
 %global scl ocaml402
 %endif
 
-%{?scl:%scl_package ocaml-re}
+%{?scl:%scl_package ocaml-uri}
 %{!?scl:%global pkg_name %{name}}
 
 %define _use_internal_dependency_generator 0
